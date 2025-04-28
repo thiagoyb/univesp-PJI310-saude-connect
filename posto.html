@@ -1,98 +1,74 @@
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous"></link>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
 <style>
-.text-left{ text-align:left;}
-.font-weight-bold{font-weight:bold;}
-label.required:before{
-	content: '*';
-	margin-right: 2px;
-	color: darkred;
-}
+    .text-left {
+        text-align: left;
+    }
+
+    .font-weight-bold {
+        font-weight: bold;
+    }
+
+    label.required:before {
+        content: '*';
+        margin-right: 2px;
+        color: darkred;
+    }
 </style>
-<div class="container-fluid">
-	<div class="card" style="box-shadow:none;margin-bottom: 0px;">
-		<div class="card-header">
-			<h4 class="card-title text-left font-weight-bold"><i class="fas fa-user fa-sm fa-fw mr-2"></i> Paciente</h4>
-		</div>
+<div class="container-fluid p-3">
+    <div class="card">
+        <div class="card-header">
+            <h4 class="card-title text-left font-weight-bold"><i class="fas fa-hospital fa-sm fa-fw mr-2"></i> Posto de Sa&uacute;de</h4>
+        </div>
+        <div class="card-body">
+            <form action="" method="post">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="nome" class="font-weight-bold text-left">Nome:</label>
+                            <input type="text" id="nome" name="nome" maxlength="180" class="form-control" />
+                        </div>
+                    </div>
+                </div>
 
-		<div class="card-body">
-		  <div class="row">
-		    <div class="col-md-2 col-lg-2"></div>
-			<div class="col-md-8 col-lg-8">
-				<div class="card card-profile">
-					<div class="card-header skew-shadow" style="background-color: #715656;overflow: visible;"></div>
-					<div class="card-body">
-						<div class="user-profile text-uppercase text-center border-bottom mt-5">
-							<h3 class="name"></h3>
+				<hr />
+
+				<div class="row">
+					<div class="col-md-3">
+						<div class="form-group">
+							<label class="font-weight-bold d-block text-left required" for="cep">CEP:</label>
+							<input type="text" class="form-control typeCep" required maxlength="9" name="cep" id="cep" value="" placeholder="00.000-000" />
 						</div>
-
-						<fieldset id="form_profile" name="form_profile" class="form bg-white text-center">
-							<div  hidden class="card-header" style="padding: 10px 0px;">
-								<div class="row row-nav-line">
-									<UL hidden class="nav nav-tabs nav-line nav-color-secondary w-100 pl-3" role="tablist"></UL>
-								</div>
-							</div>
-							<div class="card-body">
-								<div class="tab-content form-profile mt-1 mb-2" id="pills-tabContent">
-									<div class="tab-pane fade show active text-left" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
-										<div class="row">
-											<div class="col-md-12">
-												<div class="form-group border">
-													<label class="required font-weight-bold text-left" for="nome">Nome do Posto</label>
-													<input id="nome" name="nome" type="text" maxlength="180" value="" class="form-control border-bottom" required />
-												</div>
-											</div>
-										</div>
-
-										<fieldset id="profile_endereco" class="row d-block">
-										  <div class="row">
-											<div class="col-md-3">
-												<div class="form-group border">
-													<label class="font-weight-bold d-block text-left required" for="cep">CEP:</label>
-													<input type="text" class="form-control typeCep" required maxlength="9" name="cep" id="cep" value="" placeholder="00.000-000" />
-												</div>
-											</div>
-											<div class="col-md-7">
-												<div class="form-group border">
-													<label class="font-weight-bold d-block text-left required" for="rua">Rua:</label>
-													<input type="text"  class="form-control maiuscula" required maxlength="100" name="rua" id="rua" value="" onkeyup="this.value=this.value.toUpperCase()" />
-												</div>
-											</div>
-											<div class="col-md-2">
-												<div class="form-group border">
-													<label class="font-weight-bold d-block text-left required" for="numero">No:</label>
-													<input type="number"  class="form-control typeInteger" required maxlength="5" name="numero" id="numero" value="" />
-												</div>
-											</div>
-										  </div>
-
-										  <div class="row">
-											<div class="col-md-5">
-												<div class="form-group border">
-													<label class="font-weight-bold d-block text-left optional" for="complemento">Complemento:</label>
-													<input type="text"  class="form-control  maxlength="100" name="complemento" id="complemento" value="" onkeyup="this.value=this.value.toUpperCase()" placeholder="Ex: Bloco C" />
-												</div>
-											</div>
-											<div class="col-md-7">
-												<div class="form-group border">
-													<label class="font-weight-bold d-block text-left required" for="bairro">Bairro:</label>
-													<input type="text"  class="form-control maiuscula" required maxlength="100" name="bairro" id="bairro" value="" onkeyup="this.value=this.value.toUpperCase()" />
-												</div>
-											</div>
-										  </div>
-										</fieldset>
-									</div>
-								</div>
-								<div class="form-check text-center mt-4">
-									<button class="btn btn-success margin-auto" type="button" name="submit" onclick="Controller.salvarPosto(this)">Salvar</button>
-								</div>
-							</div>
-							
-							<div class="card-footer"></div>
-						</fieldset>
-					</div>					
+					</div>
+					<div class="col-md-7">
+						<div class="form-group">
+							<label class="font-weight-bold d-block text-left required" for="rua">Rua:</label>
+							<input type="text"  class="form-control maiuscula" required maxlength="100" name="rua" id="rua" value="" onkeyup="this.value=this.value.toUpperCase()" />
+						</div>
+					</div>
+					<div class="col-md-2">
+						<div class="form-group">
+							<label class="font-weight-bold d-block text-left required" for="numero">No:</label>
+							<input type="number"  class="form-control typeInteger" required maxlength="5" name="numero" id="numero" value="" />
+						</div>
+					</div>
 				</div>
-			</div>
-		  </div>
-		</div>
-	</div>
+				<div class="row">
+					<div class="col-md-5">
+						<div class="form-group">
+							<label class="font-weight-bold d-block text-left optional" for="complemento">Complemento:</label>
+							<input type="text"  class="form-control  maxlength="100" name="complemento" id="complemento" value="" onkeyup="this.value=this.value.toUpperCase()" placeholder="Ex: Bloco C" />
+						</div>
+					</div>
+					<div class="col-md-7">
+						<div class="form-group">
+							<label class="font-weight-bold d-block text-left required" for="bairro">Bairro:</label>
+							<input type="text"  class="form-control maiuscula" required maxlength="100" name="bairro" id="bairro" value="" onkeyup="this.value=this.value.toUpperCase()" />
+						</div>
+					</div>
+				</div>
+
+                <button type="submit" class="btn btn-success margin-auto mt-3">Salvar Posto</button>
+            </form>
+        </div>
+    </div>
 </div>
