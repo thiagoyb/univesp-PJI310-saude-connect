@@ -11,7 +11,7 @@ if(isset($_RECV['key']) && $_RECV['key']=='PJI310'){
 	$err=false;
 
 	switch($acao){
-		case 'wsLogin':{//OK 01/05/2023
+		case 'wsLogin':{//OK 13/05/2025
 			$login = isset($_RECV['login']) && $_RECV['login']!='' ? $_RECV['login'] : null;
 			$senha = isset($_RECV['password']) && $_RECV['password']!='' ? $_RECV['password'] : null;
 			$tipo = isset($_RECV['tipo']) && $_RECV['tipo']!='' ? $_RECV['tipo'] : null;
@@ -25,7 +25,7 @@ if(isset($_RECV['key']) && $_RECV['key']=='PJI310'){
 						$agente = User::auth(__FILE__, true);
 
 						$arrReturn['rs'] = 'OK';
-						$data = array('id'=>$agente['codUser'],'nome'=>$agente['nome'], 'data_cadastro'=>date('d/m/Y', strtotime($agente['data_cadastro'])));
+						$data = array('id'=>$agente['codUser'],'tipo'=>'S','nome'=>$agente['nome'], 'data_cadastro'=>date('d/m/Y', strtotime($agente['data_cadastro'])));
 						$arrReturn['data'] = (json_encode($data,JSON_NUMERIC_CHECK);
 					}
 					else{	$arrReturn['msg'] = $msgErro;	}
@@ -37,7 +37,7 @@ if(isset($_RECV['key']) && $_RECV['key']=='PJI310'){
 						$municipe = Cidadao::auth(__FILE__, true);
 
 						$arrReturn['rs'] = 'OK';
-						$data = array('id'=>$municipe['codPac'],'nome'=>$municipe['nome'], 'data_cadastro'=>date('d/m/Y', strtotime($municipe['data_cadastro'])));
+						$data = array('id'=>$municipe['codPac'],'tipo'=>'M','nome'=>$municipe['nome'], 'data_cadastro'=>date('d/m/Y', strtotime($municipe['data_cadastro'])));
 						$arrReturn['data'] = (json_encode($data,JSON_NUMERIC_CHECK);
 					}
 					else{	$arrReturn['msg'] = $msgErro;	}
