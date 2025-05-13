@@ -2,21 +2,21 @@
 	if(!session_id()){ session_start(); }	
 	if(!class_exists('Sql')) require 'Sql.php';
 
-	class User{
+	class Cidadao{
 		private $id;
 		private $nome;
 		private $email;
 		private $senha;
-		private $posto;
-		private $perfil;
+		private $cpf;
+		private $celular;
 
 		public function __construct($id=null){
 			$Sql = new Sql();
 
-			$data = $id!=null && $id>0 ? $Sql->select1("SELECT * FROM sci_agente_saude WHERE ativado=1 AND codUser = {$id} ORDER BY 1 DESC LIMIT 1;") : array();
+			$data = $id!=null && $id>0 ? $Sql->select1("SELECT * FROM sci_pacientes WHERE codPac = {$id} ORDER BY 1 DESC LIMIT 1;") : array();
 			foreach(($data!=null ? $data : array()) as $key => $val){
 				switch($key){
-					case 'codUser':{
+					case 'codPac':{
 						$this->id = $val;
 						break;
 					}
@@ -36,12 +36,8 @@
 						$this->cpf = $val;
 						break;
 					}
-					case 'posto':{
-						$this->posto = $val;
-						break;
-					}
-					case 'perfil':{
-						$this->perfil = $val;
+					case 'celular':{
+						$this->celular = $val;
 						break;
 					}
 				}
@@ -64,16 +60,16 @@
 			$Sql = new Sql();
 
 			$login = Utils::soNumeros($login);
-			$cPanel = User::getURL('panel');
+			$cPanel = Cidadao::getURL('panel');
 
 			if($login!='' && $senha!=''){
 				if(Utils::isCPF($login)){
 					$senha = Utils::antiSQL($senha);
 
-					$querySql = "SELECT * FROM sci_agente_saude WHERE ativado=1 AND cpf = '{$login}' AND senha = md5('{$senha}');";
+					$querySql = "SELECT * FROM sci_pacientes WHERE codPac>0 AND cpf = '{$login}' AND senha = md5('{$senha}');";
 					$rs = $Sql->select1($querySql);
 					if(!empty($rs)){
-						$_SESSION['SCI_UID'] = $rs['codUser'];
+						$_SESSION['SCI_UID'] = $rs['codPac'];
 						$_SESSION['Login'] = $rs['login'];
 						$_SESSION['SCI_Secret'] = md5($rs['senha']);
 
@@ -97,8 +93,8 @@
 
 		static function auth($origemFile, $visitante=false){
 			$UID = isset($_SESSION['SCI_UID']) && !empty($_SESSION['SCI_UID']) ? $_SESSION['SCI_UID'] : null;
-			$user = $UID!=null ? new User($UID) : array();
-			$cPanel = User::getURL('panel');
+			$user = $UID!=null ? new Cidadao($UID) : array();
+			$cPanel = Cidadao::getURL('panel');
 
 			if(!empty($user)){
 				if(isset($_SESSION['SCI_Secret']) && $_SESSION['SCI_Secret'] === md5($user->getSenha())){
@@ -126,7 +122,7 @@
 				if($this->getSenha() == $senhaAtual){
 					$id = $this->getId();
 
-					$querySql ="UPDATE sci_agente_saude SET senha = '{$senha1}' WHERE codUser = {$id}";
+					$querySql ="UPDATE sci_pacientes SET senha = '{$senha1}' WHERE codPac = {$id}";
 
 					$rs = $Sql->update($querySql);
 
@@ -178,20 +174,12 @@
 				$this->cpf = $cpf;
 		}
 
-		public function getPosto(){
-				return $this->posto;
+		public function getCelular(){
+				return $this->celular;
 		}
 
-		public function setPosto($posto){
-				$this->posto = $posto;
-		}
-
-		public function getPerfil(){
-				return $this->perfil;
-		}
-
-		public function setPerfil($perfil){
-				$this->perfil = $perfil;
+		public function setCelular($celular){
+				$this->celular = $celular;
 		}
 	}
 switch($_SERVER['REQUEST_METHOD']){
@@ -201,7 +189,7 @@ switch($_SERVER['REQUEST_METHOD']){
 		$params = isset($_GET) &&$_GET!=null && !empty($_GET) ? $_GET : array();
 
 		if(isset($params['token']) && $params['token'] > time()){
-			$u = User::auth(__FILE__, true);
+			$u = Cidadao::auth(__FILE__, true);
 			if(!empty($u)){
 				$rs = false; 	$err = false;
 
