@@ -56,7 +56,7 @@
 			return dirname(dirname(dirname(__FILE__)));
 		}
 
-		static function login($origemFile, $login, $senha){
+		static function login($origemFile, $login, $senha, $return=false){
 			$Sql = new Sql();
 
 			$login = Utils::soNumeros($login);
@@ -77,17 +77,17 @@
 					} else{
 						$msgError = "Login ou senha incorretos !";
 						setCookie("erro",$msgError);
-						header("Location: {$cPanel}/Login.php");
+						if(!$return) header("Location: {$cPanel}/Login.php");
 					}
 				} else{
 					$msgError = "Login inválido !";
 					setCookie("erro",$msgError);
-					header("Location: {$cPanel}/Login.php");
+					if(!$return) header("Location: {$cPanel}/Login.php");
 				}
 			} else{
 				$msgError = "Login ou senha inválidos.";
 				setCookie("erro",$msgError);
-				header("Location: {$cPanel}/Login.php");
+				if(!$return) header("Location: {$cPanel}/Login.php");
 			}
 		}
 
