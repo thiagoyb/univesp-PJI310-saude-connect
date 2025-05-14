@@ -1,5 +1,6 @@
 <?php
 	if(!session_id()){ session_start(); }	
+	if(!class_exists('Utils')) require 'Utils.php';	
 	if(!class_exists('Sql')) require 'Sql.php';
 
 	class User{

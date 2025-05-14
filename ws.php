@@ -2,7 +2,7 @@
 	require dirname(__FILE__).DIRECTORY_SEPARATOR.'assets'.DIRECTORY_SEPARATOR.'classes'.DIRECTORY_SEPARATOR.'User.php';
 	require dirname(__FILE__).DIRECTORY_SEPARATOR.'assets'.DIRECTORY_SEPARATOR.'classes'.DIRECTORY_SEPARATOR.'Cidadao.php';
 
-//$_RECV = isset($_GET) &&$_GET!=null && !empty($_GET) ? $_GET : array();//GET (testes)
+///$_RECV = isset($_GET) &&$_GET!=null && !empty($_GET) ? $_GET : array();//GET (testes)
 $_RECV = isset($_POST) &&$_POST!=null && !empty($_POST) ? $_POST : array();//ou POST
 
 if(isset($_RECV['key']) && $_RECV['key']=='PJI310'){
