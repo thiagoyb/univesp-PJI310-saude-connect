@@ -1,6 +1,6 @@
 <?php
-	require dirname(__FILE__).DIRECTORY_SEPARATOR.'assets'.DIRECTORY_SEPARATOR.'classes'.DIRECTORY_SEPARATOR.'User.php';
-	require dirname(__FILE__).DIRECTORY_SEPARATOR.'assets'.DIRECTORY_SEPARATOR.'classes'.DIRECTORY_SEPARATOR.'Cidadao.php';
+	require dirname(__FILE__).DIRECTORY_SEPARATOR.'assets'.DIRECTORY_SEPARATOR.'classes'.DIRECTORY_SEPARATOR.'Agente.php';
+	require dirname(__FILE__).DIRECTORY_SEPARATOR.'assets'.DIRECTORY_SEPARATOR.'classes'.DIRECTORY_SEPARATOR.'Paciente.php';
 
 ///$_RECV = isset($_GET) &&$_GET!=null && !empty($_GET) ? $_GET : array();//GET (testes)
 $_RECV = isset($_POST) &&$_POST!=null && !empty($_POST) ? $_POST : array();//ou POST
@@ -18,26 +18,26 @@ if(isset($_RECV['key']) && $_RECV['key']=='PJI310'){
 
 			if($login!=null && $senha!=null && $tipo!=null){
 				if($tipo=='Servidor'){
-					$rsLogin = User::login(__FILE__, $login, $senha, true);
+					$rsLogin = Agente::login(__FILE__, $login, $senha, true);
 					$msgErro = is_string($rsLogin) ? $rsLogin : "Senha ou login incorretos !";
 
 					if(is_bool($rsLogin) && $rsLogin===true){
-						$agente = User::auth(__FILE__, true);
+						$agente = Agente::auth(__FILE__, true);
 
 						$arrReturn['rs'] = 'OK';
-						$data = array('id'=>$agente['codUser'],'tipo'=>'S','nome'=>$agente['nome'], 'data_cadastro'=>date('d/m/Y', strtotime($agente['data_cadastro'])));
+						$data = array('id'=>$agente['codUser'],'tipo'=>'A','nome'=>$agente['nome'], 'data_cadastro'=>date('d/m/Y', strtotime($agente['data_cadastro'])));
 						$arrReturn['data'] = json_encode($data,JSON_NUMERIC_CHECK);
 					}
 					else{	$arrReturn['msg'] = $msgErro;	}
 				} else{
-					$rsLogin = Cidadao::login(__FILE__, $login, $senha, true);
+					$rsLogin = Paciente::login(__FILE__, $login, $senha, true);
 					$msgErro = is_string($rsLogin) ? $rsLogin : "Senha ou login incorretos !";
 
 					if(is_bool($rsLogin) && $rsLogin===true){
-						$municipe = Cidadao::auth(__FILE__, true);
+						$paciente = Paciente::auth(__FILE__, true);
 
 						$arrReturn['rs'] = 'OK';
-						$data = array('id'=>$municipe['codPac'],'tipo'=>'M','nome'=>$municipe['nome'], 'data_cadastro'=>date('d/m/Y', strtotime($municipe['data_cadastro'])));
+						$data = array('id'=>$paciente['codPac'],'tipo'=>'P','nome'=>$paciente['nome'], 'data_cadastro'=>date('d/m/Y', strtotime($municipe['data_cadastro'])));
 						$arrReturn['data'] = json_encode($data,JSON_NUMERIC_CHECK);
 					}
 					else{	$arrReturn['msg'] = $msgErro;	}
