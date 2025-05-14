@@ -3,7 +3,7 @@
 	if(!class_exists('Utils')) require 'Utils.php';	
 	if(!class_exists('Sql')) require 'Sql.php';
 
-	class User{
+	class Agente{
 		private $id;
 		private $nome;
 		private $email;
@@ -65,7 +65,7 @@
 			$Sql = new Sql();
 
 			$login = Utils::soNumeros($login);
-			$cPanel = User::getURL('panel');
+			$cPanel = Agente::getURL('panel');
 
 			if($login!='' && $senha!=''){
 				if(Utils::isCPF($login)){
@@ -98,8 +98,8 @@
 
 		static function auth($origemFile, $visitante=false){
 			$UID = isset($_SESSION['SCI_UID']) && !empty($_SESSION['SCI_UID']) ? $_SESSION['SCI_UID'] : null;
-			$user = $UID!=null ? new User($UID) : array();
-			$cPanel = User::getURL('panel');
+			$user = $UID!=null ? new Agente($UID) : array();
+			$cPanel = Agente::getURL('panel');
 
 			if(!empty($user)){
 				if(isset($_SESSION['SCI_Secret']) && $_SESSION['SCI_Secret'] === md5($user->getSenha())){
@@ -202,7 +202,7 @@ switch($_SERVER['REQUEST_METHOD']){
 		$params = isset($_GET) &&$_GET!=null && !empty($_GET) ? $_GET : array();
 
 		if(isset($params['token']) && $params['token'] > time()){
-			$u = User::auth(__FILE__, true);
+			$u = Agente::auth(__FILE__, true);
 			if(!empty($u)){
 				$rs = false; 	$err = false;
 
