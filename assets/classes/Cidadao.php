@@ -195,7 +195,7 @@ switch($_SERVER['REQUEST_METHOD']){
 
 				switch($params['a']){
 					case 'alteraSenha':
-						$rs = $u->alterarSenha(= isset($_POST) &&$_POST!=null && !empty($_POST) ? $_POST : array(), true);
+						$rs = $u->alterarSenha(isset($_POST) &&$_POST!=null && !empty($_POST) ? $_POST : array(), true);
 						break;
 					default:
 						$err = true;

@@ -26,7 +26,7 @@ if(isset($_RECV['key']) && $_RECV['key']=='PJI310'){
 
 						$arrReturn['rs'] = 'OK';
 						$data = array('id'=>$agente['codUser'],'tipo'=>'S','nome'=>$agente['nome'], 'data_cadastro'=>date('d/m/Y', strtotime($agente['data_cadastro'])));
-						$arrReturn['data'] = (json_encode($data,JSON_NUMERIC_CHECK);
+						$arrReturn['data'] = json_encode($data,JSON_NUMERIC_CHECK);
 					}
 					else{	$arrReturn['msg'] = $msgErro;	}
 				} else{
@@ -38,7 +38,7 @@ if(isset($_RECV['key']) && $_RECV['key']=='PJI310'){
 
 						$arrReturn['rs'] = 'OK';
 						$data = array('id'=>$municipe['codPac'],'tipo'=>'M','nome'=>$municipe['nome'], 'data_cadastro'=>date('d/m/Y', strtotime($municipe['data_cadastro'])));
-						$arrReturn['data'] = (json_encode($data,JSON_NUMERIC_CHECK);
+						$arrReturn['data'] = json_encode($data,JSON_NUMERIC_CHECK);
 					}
 					else{	$arrReturn['msg'] = $msgErro;	}
 				}
