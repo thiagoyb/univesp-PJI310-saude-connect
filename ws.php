@@ -38,7 +38,7 @@ if(isset($_RECV['key']) && $_RECV['key']=='PJI310'){
 						$paciente = Paciente::auth(__FILE__, true);
 
 						$arrReturn['rs'] = 'OK';
-						$data = array('id'=>$paciente['codPac'],'tipo'=>'P','nome'=>$paciente['nome'], 'data_cadastro'=>date('d/m/Y', strtotime($municipe['data_cadastro'])));
+						$data = array('id'=>$paciente['codPac'],'tipo'=>'P','nome'=>$paciente['nome'], 'data_cadastro'=>date('d/m/Y', strtotime($paciente['data_cadastro'])));
 						$arrReturn['data'] = json_encode($data,JSON_NUMERIC_CHECK);
 					}
 					else{	$arrReturn['msg'] = $msgErro;	}
