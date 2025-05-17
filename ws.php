@@ -25,7 +25,7 @@ if(isset($_RECV['key']) && $_RECV['key']=='PJI310'){
 						$agente = Agente::auth(__FILE__, true);
 
 						$arrReturn['rs'] = 'OK';
-						$data = array('id'=>$agente['codUser'],'tipo'=>'A','nome'=>$agente['nome'], 'data_cadastro'=>date('d/m/Y', strtotime($agente['data_cadastro'])));
+						$data = array('id'=>$agente->getId(),'tipo'=>'A',$agente->getNome(), 'data_cadastro'=>date('d/m/Y', strtotime($agente->getDataCadastro())));
 						$arrReturn['data'] = json_encode($data,JSON_NUMERIC_CHECK);
 					}
 					else{	$arrReturn['msg'] = $msgErro;	}
@@ -38,7 +38,7 @@ if(isset($_RECV['key']) && $_RECV['key']=='PJI310'){
 						$paciente = Paciente::auth(__FILE__, true);
 
 						$arrReturn['rs'] = 'OK';
-						$data = array('id'=>$paciente['codPac'],'tipo'=>'P','nome'=>$paciente['nome'], 'data_cadastro'=>date('d/m/Y', strtotime($paciente['data_cadastro'])));
+						$data = array('id'=>$paciente->getId(),'tipo'=>'P',$paciente->getNome(), 'data_cadastro'=>date('d/m/Y', strtotime($paciente->getDataCadastro())));
 						$arrReturn['data'] = json_encode($data,JSON_NUMERIC_CHECK);
 					}
 					else{	$arrReturn['msg'] = $msgErro;	}

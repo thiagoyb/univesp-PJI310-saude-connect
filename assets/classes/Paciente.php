@@ -10,6 +10,7 @@
 		private $senha;
 		private $cpf;
 		private $celular;
+		private $data_cadastro;
 
 		public function __construct($id=null){
 			$Sql = new Sql();
@@ -39,6 +40,10 @@
 					}
 					case 'celular':{
 						$this->celular = $val;
+						break;
+					}
+					case 'data_cadastro':{
+						$this->data_cadastro = $val;
 						break;
 					}
 				}
@@ -71,7 +76,7 @@
 					$rs = $Sql->select1($querySql);
 					if(!empty($rs)){
 						$_SESSION['SCI_UID'] = $rs['codPac'];
-						$_SESSION['Login'] = $rs['login'];
+						$_SESSION['Login'] = $rs['cpf'];
 						$_SESSION['SCI_Secret'] = md5($rs['senha']);
 
 						return true;
@@ -99,7 +104,7 @@
 
 			if(!empty($user)){
 				if(isset($_SESSION['SCI_Secret']) && $_SESSION['SCI_Secret'] === md5($user->getSenha())){
-					if(in_array(basename(dirname($origemFile)), array('panel','classes'))){
+					if(in_array(substr(basename(dirname($origemFile)),0,7), array('panel','classes','univesp'))){
 						return $user;
 					}
 				}else{
@@ -181,6 +186,14 @@
 
 		public function setCelular($celular){
 				$this->celular = $celular;
+		}
+
+		public function getDataCadastro(){
+				return $this->data_cadastro;
+		}
+
+		public function setDataCadastro($data){
+				$this->data_cadastro = $data;
 		}
 	}
 switch($_SERVER['REQUEST_METHOD']){

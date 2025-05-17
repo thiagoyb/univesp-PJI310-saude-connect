@@ -10,6 +10,7 @@
 		private $senha;
 		private $posto;
 		private $perfil;
+		private $data_cadastro;
 
 		public function __construct($id=null){
 			$Sql = new Sql();
@@ -45,6 +46,10 @@
 						$this->perfil = $val;
 						break;
 					}
+					case 'data_cadastro':{
+						$this->data_cadastro = $val;
+						break;
+					}
 				}
 			}
 		}
@@ -75,7 +80,7 @@
 					$rs = $Sql->select1($querySql);
 					if(!empty($rs)){
 						$_SESSION['SCI_UID'] = $rs['codUser'];
-						$_SESSION['Login'] = $rs['login'];
+						$_SESSION['Login'] = $rs['cpf'];
 						$_SESSION['SCI_Secret'] = md5($rs['senha']);
 
 						return true;
@@ -103,7 +108,7 @@
 
 			if(!empty($user)){
 				if(isset($_SESSION['SCI_Secret']) && $_SESSION['SCI_Secret'] === md5($user->getSenha())){
-					if(in_array(basename(dirname($origemFile)), array('panel','classes'))){
+					if(in_array(substr(basename(dirname($origemFile)),0,7), array('panel','classes','univesp'))){
 						return $user;
 					}
 				}else{
@@ -194,6 +199,14 @@
 		public function setPerfil($perfil){
 				$this->perfil = $perfil;
 		}
+
+		public function getDataCadastro(){
+				return $this->data_cadastro;
+		}
+
+		public function setDataCadastro($data){
+				$this->data_cadastro = $data;
+		}
 	}
 switch($_SERVER['REQUEST_METHOD']){
     case 'PUT':{}
@@ -218,7 +231,7 @@ switch($_SERVER['REQUEST_METHOD']){
 				$arrResponse['msg'] = is_string($rs) ? $rs : ($arrResponse['rs'] ? 'Salvo com Sucesso !' : 'Error: User');
 			}
 			else{ $arrResponse['rs'] = -1; }
-			
+
 			if(!$err) echo json_encode($arrResponse, JSON_NUMERIC_CHECK);
 		}
 		break;
