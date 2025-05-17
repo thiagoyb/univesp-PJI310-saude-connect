@@ -1,9 +1,9 @@
 <?php
+	require dirname(__FILE__).DIRECTORY_SEPARATOR.'assets'.DIRECTORY_SEPARATOR.'classes'.DIRECTORY_SEPARATOR.'Utils.php';
 	require dirname(__FILE__).DIRECTORY_SEPARATOR.'assets'.DIRECTORY_SEPARATOR.'classes'.DIRECTORY_SEPARATOR.'Agente.php';
 	require dirname(__FILE__).DIRECTORY_SEPARATOR.'assets'.DIRECTORY_SEPARATOR.'classes'.DIRECTORY_SEPARATOR.'Paciente.php';
 
-///$_RECV = isset($_GET) &&$_GET!=null && !empty($_GET) ? $_GET : array();//GET (testes)
-$_RECV = isset($_POST) &&$_POST!=null && !empty($_POST) ? $_POST : array();//ou POST
+$_RECV = Utils::receiveAjaxData('GET');
 
 if(isset($_RECV['key']) && $_RECV['key']=='PJI310'){
 	$acao = isset($_RECV['a']) && $_RECV['a']!='' ? $_RECV['a'] : null;
@@ -11,7 +11,7 @@ if(isset($_RECV['key']) && $_RECV['key']=='PJI310'){
 	$err=false;
 
 	switch($acao){
-		case 'wsLogin':{//OK 13/05/2025
+		case 'wsLogin':{
 			$login = isset($_RECV['login']) && $_RECV['login']!='' ? $_RECV['login'] : null;
 			$senha = isset($_RECV['password']) && $_RECV['password']!='' ? $_RECV['password'] : null;
 			$tipo = isset($_RECV['tipo']) && $_RECV['tipo']!='' ? $_RECV['tipo'] : null;
@@ -29,7 +29,8 @@ if(isset($_RECV['key']) && $_RECV['key']=='PJI310'){
 						$arrReturn['data'] = json_encode($data,JSON_NUMERIC_CHECK);
 					}
 					else{	$arrReturn['msg'] = $msgErro;	}
-				} else{
+				}
+				if($tipo=='Paciente'){
 					$rsLogin = Paciente::login(__FILE__, $login, $senha, true);
 					$msgErro = is_string($rsLogin) ? $rsLogin : "Senha ou login incorretos !";
 
@@ -41,7 +42,7 @@ if(isset($_RECV['key']) && $_RECV['key']=='PJI310'){
 						$arrReturn['data'] = json_encode($data,JSON_NUMERIC_CHECK);
 					}
 					else{	$arrReturn['msg'] = $msgErro;	}
-				}
+				} else{	$arrReturn['msg'] = "Erro no tipo de login.";	}
 			} else{
 				$arrReturn['msg'] = 'Preencha todos os campos !';
 			}
