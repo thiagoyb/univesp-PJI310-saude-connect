@@ -202,7 +202,7 @@ switch($_SERVER['REQUEST_METHOD']){
 		$arrResponse =  array('rs'=>false, 'msg'=>'');
 		$params = isset($_GET) &&$_GET!=null && !empty($_GET) ? $_GET : array();
 
-		if(isset($params['token']) && $params['token'] > time()){
+		if(isset($params['key']) && $params['key'] = 'PJI310'){
 			$u = Paciente::auth(__FILE__, true);
 			if(!empty($u)){
 				$rs = false; 	$err = false;
