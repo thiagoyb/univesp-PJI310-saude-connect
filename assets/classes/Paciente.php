@@ -50,79 +50,96 @@
 			}
 		}
 
-		static function getURL($route=''){
-			require dirname(__FILE__).DIRECTORY_SEPARATOR.'Config.php';
-
-			$URL = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 'https://' : 'http://');
-			$HOST = substr($Config['URL'], strpos($Config['URL'], '://')+3);
-
-			return $URL.$HOST.$route;
-		}
-		static function getPATH(){
-			return dirname(dirname(dirname(__FILE__)));
-		}
-
-		static function login($origemFile, $login, $senha, $return=false){
+		public static function cadastrarPaciente($data){
 			$Sql = new Sql();
 
-			$login = Utils::soNumeros($login);
-			$cPanel = Paciente::getURL('panel');
+			$arr=array();
+			$arr['nome'] = isset($data['nome']) && $data['nome']!='' ? strtoupper($data['nome']) : null;
+			$arr['cpf'] = isset($data['cpf']) && Utils::isCPF($data['cpf']) ? Utils::soNumeros($data['cpf']) : null;
+			$arr['senha'] = isset($data['senha']) && $data['senha']!='' ? md5($data['senha']) : md5($arr['cpf']);
+			$arr['email'] = isset($data['email']) && $data['email']!='' ? strtolower($data['email']) : null;
+			$arr['celular'] = isset($data['celular']) ? Utils::soNumeros($data['celular']) : null;
+			$arr['cns'] = isset($data['cns']) ? Utils::soNumeros($data['cns']) : '';
+			$arr['data_nasc'] = isset($data['data_nasc']) ? trim($data['data_nasc']) : '';
+			$arr['sexo'] = isset($data['sexo']) ? strtoupper($data['sexo']) : '';
+			$arr['profissao'] = isset($data['profissao']) ? strtoupper($data['profissao']) : null;
 
-			if($login!='' && $senha!=''){
+			if($arr['nome']!=null && $arr['email']!=null && $arr['cpf']!=null){
+
+				return $Sql->newInstance('sci_pacientes', $arr);
+			}
+			else return "Todos os campos são obrigatórios !";
+		}
+
+		public static function loginPaciente($data){
+			$Sql = new Sql();
+
+			$login = isset($data['login']) ? Utils::soNumeros($data['login']) : null;
+			$senhaAtual = isset($data['senha']) && $data['senha']!='' ? $data['senha'] : null;
+
+			if($login!=null && $senha!=null){
 				if(Utils::isCPF($login)){
-					$senha = Utils::antiSQL($senha);
-
 					$querySql = "SELECT * FROM sci_pacientes WHERE codPac>0 AND cpf = '{$login}' AND senha = md5('{$senha}');";
 					$rs = $Sql->select1($querySql);
-					if(!empty($rs)){
-						$_SESSION['SCI_UID'] = $rs['codPac'];
-						$_SESSION['Login'] = $rs['cpf'];
-						$_SESSION['SCI_Secret'] = md5($rs['senha']);
 
-						return true;
-					} else{
-						$msgError = "Login ou senha incorretos !";
-						setCookie("erro",$msgError);
-						if(!$return) header("Location: {$cPanel}/Login.php");
-					}
-				} else{
-					$msgError = "Login inválido !";
-					setCookie("erro",$msgError);
-					if(!$return) header("Location: {$cPanel}/Login.php");
+					return $rs!=null && !empty($rs) ? $rs : false;
 				}
-			} else{
-				$msgError = "Login ou senha inválidos.";
-				setCookie("erro",$msgError);
-				if(!$return) header("Location: {$cPanel}/Login.php");
+				else return "CPF inválido !";
 			}
+			else return "Login ou senha inválidos.";
 		}
 
-		static function auth($origemFile, $visitante=false){
-			$UID = isset($_SESSION['SCI_UID']) && !empty($_SESSION['SCI_UID']) ? $_SESSION['SCI_UID'] : null;
-			$user = $UID!=null ? new Paciente($UID) : array();
-			$cPanel = Paciente::getURL('panel');
+		public static function getPaciente($id=null){
+			$Sql = new Sql();
+			$id = $id!=null && $id!='' ? $id : 0;
 
-			if(!empty($user)){
-				if(isset($_SESSION['SCI_Secret']) && $_SESSION['SCI_Secret'] === md5($user->getSenha())){
-					if(in_array(substr(basename(dirname($origemFile)),0,7), array('panel','classes','univesp'))){
-						return $user;
-					}
-				}else{
-					setCookie("erro","Sua senha foi alterada. Faça seu login!");
-					if(!$visitante) header("Location: {$cPanel}/Login.php");
-				}
-			} else{
-			   setCookie("erro",'Bem-vindo !');
-			   if(!$visitante) header("Location: {$cPanel}/Login.php");
+			if($id>0){
+				$querySql ="SELECT * FROM sci_pacientes WHERE codPac = {$id} ORDER BY codPac DESC;";
+
+				return $Sql->select1($querySql);
 			}
+			else return "ID inválido !";
 		}
 
-		public function alterarSenha($data, $manterSessao=false){
+		public static function listarPacientes(){
 			$Sql = new Sql();
 
-			$senha1 = isset($data['password1']) ? md5($data['password1']) : null;
-			$senha2 = isset($data['password2']) ? md5($data['password2']) : null;
-			$senhaAtual = isset($data['password']) ? md5($data['password']) : null;
+			$querySql ="SELECT * FROM sci_pacientes WHERE codPac>0 ORDER BY codPac DESC;";
+			return $Sql->select($querySql);
+		}
+
+		public function alterarDados($data){
+			$Sql = new Sql();
+
+			$nome = isset($data['nome']) ? strtoupper($data['nome']) : null;
+			$email = isset($data['email']) ? strtolower($data['email']) : null;
+			$celular = isset($data['celular']) ? Utils::soNumeros($data['celular']) : null;
+			$cns = isset($data['cns']) ? Utils::soNumeros($data['cns']) : '';
+			$data_nasc = isset($data['data_nasc']) ? trim($data['data_nasc']) : '';
+			$sexo = isset($data['sexo']) ? strtoupper($data['sexo']) : '';
+			$profissao = isset($data['profissao']) ? strtoupper($data['profissao']) : null;
+
+			$whereAdd ='';
+			$whereAdd.= $nome!=null ? ", nome = '{$nome}'";
+			$whereAdd.= $email!=null ? ", email = '{$email}'";
+			$whereAdd.= $celular!=null ? ", celular = '{$celular}'";
+			$whereAdd.= $cns!=null ? ", cns = '{$cns}'";
+			$whereAdd.= $data_nasc!=null ? ", data_nasc = '{$data_nasc}'";
+			$whereAdd.= $sexo!=null ? ", sexo = '{$sexo}'";
+			$whereAdd.= $profissao!=null ? ", profissao = '{$profissao}'";
+
+			$id = $this->getId();
+			$querySql ="UPDATE sci_pacientes SET data_cadastro = data_cadastro {$whereAdd} WHERE codPac = {$id}";
+
+			return $whereAdd!='' ? $Sql->update($querySql) : true;
+		}
+
+		public function alterarSenha($data){
+			$Sql = new Sql();
+
+			$senha1 = isset($data['senha1']) ? md5($data['senha1']) : null;
+			$senha2 = isset($data['senha2']) ? md5($data['senha2']) : null;
+			$senhaAtual = isset($data['senha']) ? md5($data['senha']) : null;
 
 			if($senha1!=null && $senha1 == $senha2){
 				if($this->getSenha() == $senhaAtual){
@@ -130,10 +147,7 @@
 
 					$querySql ="UPDATE sci_pacientes SET senha = '{$senha1}' WHERE codPac = {$id}";
 
-					$rs = $Sql->update($querySql);
-
-					if($rs && $manterSessao) $_SESSION['SCI_Secret'] = md5($senha1);
-					return $rs;
+					return $Sql->update($querySql);
 				}
 				else return 'Senha antiga não confere.';
 			}
@@ -197,29 +211,65 @@
 		}
 	}
 switch($_SERVER['REQUEST_METHOD']){
-    case 'PUT':{}
+   case 'PUT':{
+		$arrResponse =  array('rs'=>false, 'msg'=>'');
+		$_RECV = Utils::receiveAjaxData('PUT');
+
+		if(isset($_RECV['key']) && $_RECV['key'] = 'PJI310'){
+			$id = isset($_RECV['id']) && $_RECV['id']!='' ? intval($_RECV['id']) : 0;
+			$u = new Paciente($id);
+
+			if(!empty($u)){
+				$rs = isset($_RECV['senha']) ? $u->alterarSenha($_RECV) : $u->alterarDados($_RECV);
+
+				$arrResponse['rs'] = $rs===true;
+				$arrResponse['msg'] = is_string($rs) ? $rs : ($arrResponse['rs'] ? "Salvo com Sucesso!" : "Erro ao tentar salvar.");
+			}
+			else{
+				$arrResponse['rs'] = -1;
+				$arrResponse['msg'] = "Não atenticado ! Faça seu Login.";
+			}
+
+			echo json_encode($arrResponse, JSON_NUMERIC_CHECK);
+		}
+		break;
+	}
+	case 'GET':{
+		$arrResponse =  array('rs'=>false, 'msg'=>'');
+		$_RECV = Utils::receiveAjaxData('GET');
+
+		if(isset($_RECV['key']) && $_RECV['key'] = 'PJI310'){
+			$id = isset($_RECV['id']) && $_RECV['id']!='' ? intval($_RECV['id']) : 0;
+
+			$rs = $id > 0 ? Paciente::getPaciente($id) ? Paciente::listarPacientes();
+
+			echo json_encode($rs, JSON_NUMERIC_CHECK);
+		}
+		break;
+	}
 	case 'POST':{
 		$arrResponse =  array('rs'=>false, 'msg'=>'');
-		$params = isset($_GET) &&$_GET!=null && !empty($_GET) ? $_GET : array();
+		$_RECV = Utils::receiveAjaxData('GET');
 
-		if(isset($params['key']) && $params['key'] = 'PJI310'){
-			$u = Paciente::auth(__FILE__, true);
-			if(!empty($u)){
-				$rs = false; 	$err = false;
+		if(isset($_RECV['key']) && $_RECV['key'] = 'PJI310'){
+			$id = isset($_RECV['id']) && $_RECV['id']!='' ? intval($_RECV['id']) : 0;
 
-				switch($params['a']){
-					case 'alteraSenha':
-						$rs = $u->alterarSenha(isset($_POST) &&$_POST!=null && !empty($_POST) ? $_POST : array(), true);
-						break;
-					default:
-						$err = true;
-				}
+			if($id > 0){
+				$rs = Paciente::loginPaciente($_RECV);
 
-				$arrResponse['rs'] = is_bool($rs) && $rs===true;
-				$arrResponse['msg'] = is_string($rs) ? $rs : ($arrResponse['rs'] ? 'Salvo com Sucesso !' : 'Error: User');
+				$arrResponse['rs'] = $rs===true;
+				$arrResponse['msg'] = is_string($rs) ? $rs : ($arrResponse['rs'] ? "Login com Sucesso!" : "Erro ao tentar fazer login.");
 			}
-			else{ $arrResponse['rs'] = -1; }
-			
+			else if(!isset($_RECV['id'])){
+				$rs = Paciente::cadastrarPaciente($_RECV);
+
+				$arrResponse['rs'] = $rs===true;
+				$arrResponse['msg'] = is_string($rs) ? $rs : ($arrResponse['rs'] ? "Cadastrado com Sucesso!" : "Erro ao tentar cadastrar.");
+			}
+			else{
+				$err=true;
+			}
+
 			if(!$err) echo json_encode($arrResponse, JSON_NUMERIC_CHECK);
 		}
 		break;

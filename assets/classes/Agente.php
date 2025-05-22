@@ -66,7 +66,7 @@
 
 			if($arr['nome']!=null && $arr['email']!=null && $arr['cpf']!=null){
 
-				return $Sql->newInstance($arr);
+				return $Sql->newInstance('sci_agente_saude', $arr);
 			}
 			else return "Todos os campos são obrigatórios !";
 		}
@@ -264,7 +264,7 @@ switch($_SERVER['REQUEST_METHOD']){
 				$rs = Agente::cadastrarAgente($_RECV);
 
 				$arrResponse['rs'] = $rs===true;
-				$arrResponse['msg'] = is_string($rs) ? $rs : ($arrResponse['rs'] ? "Login com Sucesso!" : "Erro ao tentar fazer login.");
+				$arrResponse['msg'] = is_string($rs) ? $rs : ($arrResponse['rs'] ? "Cadastrado com Sucesso!" : "Erro ao tentar cadastrar.");
 			}
 			else{
 				$err=true;
