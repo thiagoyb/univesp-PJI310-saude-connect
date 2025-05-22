@@ -249,7 +249,7 @@ switch($_SERVER['REQUEST_METHOD']){
 	}
 	case 'POST':{
 		$arrResponse =  array('rs'=>false, 'msg'=>'');
-		$_RECV = Utils::receiveAjaxData('GET');
+		$_RECV = Utils::receiveAjaxData('POST');
 
 		if(isset($_RECV['key']) && $_RECV['key'] = 'PJI310'){
 			$id = isset($_RECV['id']) && $_RECV['id']!='' ? intval($_RECV['id']) : 0;

@@ -2,6 +2,7 @@
 	if(!session_id()){ session_start(); }	
 	if(!class_exists('Utils')) require 'Utils.php';	
 	if(!class_exists('Sql')) require 'Sql.php';
+	if(!class_exists('Agente')) require 'Agente.php';
 
 	class Visita{
 		private $id;
@@ -35,51 +36,82 @@
 			}
 		}
 
-		static function getURL($route=''){
-			require dirname(__FILE__).DIRECTORY_SEPARATOR.'Config.php';
+		public function apagarVisita($agente, $data){
+			if($agente!=null && $agente->getPerfil()!=''){				
+				$id = isset($_RECV['id']) && $_RECV['id']!='' ? intval($_RECV['id']) : 0;
 
-			$URL = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 'https://' : 'http://');
-			$HOST = substr($Config['URL'], strpos($Config['URL'], '://')+3);
+				if($id>0){
+					$Sql = new Sql();
+					
+					$querySql ="DELETE FROM sci_visitas WHERE codVis = {$id}";
 
-			return $URL.$HOST.$route;
-		}
-		static function getPATH(){
-			return dirname(dirname(dirname(__FILE__)));
-		}
-
-		static function novaVisita($p=null, $data=null, $a=null){
-			$Sql = new Sql();
-
-			$p = Utils::soNumeros($p);
-			$a = Utils::soNumeros($a);
-
-			if($p!=null && $a!=null && $data!=null){
-				if(checkdate(date('m',strtotime($data)), date('d',strtotime($data)), date('Y',strtotime($data)))){
-					$querySql = "INSERT INTO sci_visitas (status, data_visita, fkPaciente, fkAgente) VALUES ('CRIADA', '{$data}', {$p}, {$a});";
-					$rs = $Sql->query($querySql);
-					return $rs ? $rs : "Erro ao salvar paciente.";
-				} else{
-					$msgError = "Data de Visita inválida !";
-					setCookie("erro",$msgError);
+					return $Sql->update($querySql);
 				}
-			} else{
-				$msgError = "Paciente ou data inválida.";
-				setCookie("erro",$msgError);
+				else return "ID Invalido !";
 			}
+			else return "Não tem permissão !";
 		}
 
-		static function getVisitas($id=null){
+		public function alterarDados($agente, $data){
+			if($agente!=null && $agente->getPerfil()!=''){				
+				$id = isset($_RECV['id']) && $_RECV['id']!='' ? intval($_RECV['id']) : 0;
+
+				if($id>0){
+					$Sql = new Sql();
+
+					$status = isset($data['status']) ? strtoupper($data['status']) : null;
+					$data_visita = isset($data['data_visita']) && $data['data_visita']!='' ? trim($data['data_visita']) : null;
+
+					$whereAdd ='';			
+					$whereAdd.= $status!=null ? ", status = '{$status}'";
+					$whereAdd.= $data_visita!=null ? ", data_visita = '{$data_visita}'";
+
+					$querySql ="UPDATE sci_visitas SET data_cadastro = data_cadastro {$whereAdd} WHERE codVis = {$id}";
+
+					return $whereAdd!='' ? $Sql->update($querySql) : true;
+				}
+				else return "ID Invalido !";
+			}
+			else return "Não tem permissão !";
+		}
+
+		public static function cadastrarVisita($agente, $data){
+			if($agente!=null && $agente->getPerfil()!=''){
+				$Sql = new Sql();
+
+				$arr=array();
+				$arr['status'] = 'CRIADA';
+				$arr['data_visita'] = isset($data['data_visita']) && $data['data_visita']!='' ? trim($data['data_visita']) : null;
+
+				$arr['fkPaciente'] = isset($data['paciente']) ? intval($data['paciente']) : null;
+				$arr['fkAgente'] = $agente->getId();
+
+				if($arr['data_visita']!=null && $arr['fkPaciente']!=null && $arr['fkAgente']!=null){
+
+					return $Sql->newInstance('sci_visitas', $arr);
+				}
+				else return "Todos os campos são obrigatórios !";
+			}
+			else return "Não tem permissão !";
+		}
+
+		public static function getVisita($id=null){
+			$Sql = new Sql();
+			$id = $id!=null && $id!='' ? $id : 0;
+
+			if($id>0){
+				$querySql ="SELECT * FROM sci_visitas WHERE fkPaciente = {$id} ORDER BY codVis DESC;";
+
+				return $Sql->select1($querySql);
+			}
+			else return "ID inválido !";
+		}
+
+		public static function listarVisitas(){
 			$Sql = new Sql();
 
-			$id = intval(Utils::soNumeros($id));
-
-			if($id!=null && $id>0){
-				$querySql = "SELECT * FROM sci_visitas WHERE fkPaciente = {$id} ORDER BY data_visita ASC;";
-				
-				return $Sql->select($querySql);
-			} else{
-			   return 'ID invalido !';
-			}
+			$querySql ="SELECT * FROM sci_visitas WHERE codVis>0 ORDER BY codVis DESC;";
+			return $Sql->select($querySql);
 		}
 
 		public function getId(){
@@ -115,20 +147,84 @@
 		}
 	}
 switch($_SERVER['REQUEST_METHOD']){
-    case 'PUT':{}
+    case 'DELETE':{
+		$arrResponse =  array('rs'=>false, 'msg'=>'');
+		$_RECV = Utils::receiveAjaxData('DELETE');
+
+		if(isset($_RECV['key']) && $_RECV['key'] = 'PJI310'){
+			$id = isset($_RECV['idAgente']) && $_RECV['idAgente']!='' ? intval($_RECV['idAgente']) : 0;
+			$u = new Agente($id);
+
+			if(!empty($u)){
+				$rs = Visita::apagarVisita($u, $_RECV);
+
+				$arrResponse['rs'] = $rs===true;
+				$arrResponse['msg'] = is_string($rs) ? $rs : ($arrResponse['rs'] ? "Apagado com Sucesso!" : "Erro ao tentar apagar.");
+			}
+			else{
+				$arrResponse['rs'] = -1;
+				$arrResponse['msg'] = "Não atenticado ! Faça seu Login.";
+			}
+			
+			echo json_encode($arrResponse, JSON_NUMERIC_CHECK);
+		}
+		break;
+	}
+	case 'PUT':{
+		$arrResponse =  array('rs'=>false, 'msg'=>'');
+		$_RECV = Utils::receiveAjaxData('PUT');
+
+		if(isset($_RECV['key']) && $_RECV['key'] = 'PJI310'){
+			$id = isset($_RECV['idAgente']) && $_RECV['idAgente']!='' ? intval($_RECV['idAgente']) : 0;
+			$u = new Agente($id);
+
+			if(!empty($u)){
+				$rs = Visita::alterarDados($u, $_RECV);
+
+				$arrResponse['rs'] = $rs===true;
+				$arrResponse['msg'] = is_string($rs) ? $rs : ($arrResponse['rs'] ? "Salvo com Sucesso!" : "Erro ao tentar salvar.");
+			}
+			else{
+				$arrResponse['rs'] = -1;
+				$arrResponse['msg'] = "Não atenticado ! Faça seu Login.";
+			}
+			
+			echo json_encode($arrResponse, JSON_NUMERIC_CHECK);
+		}
+		break;
+	}
 	case 'GET':{
 		$arrResponse =  array('rs'=>false, 'msg'=>'');
-		$params = isset($_GET) &&$_GET!=null && !empty($_GET) ? $_GET : array();
+		$_RECV = Utils::receiveAjaxData('GET');
 
-		if(isset($params['key']) && $params['key'] = 'PJI310'){
+		if(isset($_RECV['key']) && $_RECV['key'] = 'PJI310'){
+			$id = isset($_RECV['id']) && $_RECV['id']!='' ? intval($_RECV['id']) : 0;
 
-			$visitas = Visita::getVisitas(isset($params['id']) ? intval($params['id']) : null);
-			$visitas = $visitas!=null ? $visitas : array();
+			$rs = $id > 0 ? Agente::getVisita($id) ? Agente::listarVisitas();
 
-			$arrResponse['rs'] = true;
-			$arrResponse['msg'] = 'OK';
-			$arrResponse['data'] = json_encode($visitas,JSON_NUMERIC_CHECK);
+			echo json_encode($rs, JSON_NUMERIC_CHECK);
+		}
+		break;
+	}
+	case 'POST':{
+		$arrResponse =  array('rs'=>false, 'msg'=>'');
+		$_RECV = Utils::receiveAjaxData('POST');
 
+		if(isset($_RECV['key']) && $_RECV['key'] = 'PJI310'){
+			$id = isset($_RECV['idAgente']) && $_RECV['idAgente']!='' ? intval($_RECV['idAgente']) : 0;
+			$u = new Agente($id);
+
+			if(!empty($u)){
+				$rs = Visita::cadastrarVisita($u, $_RECV);
+
+				$arrResponse['rs'] = $rs===true;
+				$arrResponse['msg'] = is_string($rs) ? $rs : ($arrResponse['rs'] ? "Cadastrado com Sucesso!" : "Erro ao tentar cadastrar.");
+			}
+			else{
+				$arrResponse['rs'] = -1;
+				$arrResponse['msg'] = "Não atenticado ! Faça seu Login.";
+			}
+			
 			echo json_encode($arrResponse, JSON_NUMERIC_CHECK);
 		}
 		break;
