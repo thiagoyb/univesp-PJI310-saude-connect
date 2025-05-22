@@ -136,9 +136,9 @@
 			$posto = isset($data['posto']) ? intval($data['posto']) : null;
 
 			$whereAdd ='';
-			$whereAdd.= $nome!=null ? ", nome = '{$nome}'";
-			$whereAdd.= $email!=null ? ", email = '{$email}'";
-			$whereAdd.= $posto!=null ? ", fkPosto = {$posto}";
+			$whereAdd.= $nome!=null ? ", nome = '{$nome}'" : '';
+			$whereAdd.= $email!=null ? ", email = '{$email}'" : '';
+			$whereAdd.= $posto!=null ? ", fkPosto = {$posto}" : '';
 
 			$id = $this->getId();
 			$querySql ="UPDATE sci_agente_saude SET data_cadastro = data_cadastro {$whereAdd} WHERE codUser = {$id}";
@@ -241,7 +241,7 @@ switch($_SERVER['REQUEST_METHOD']){
 		if(isset($_RECV['key']) && $_RECV['key'] = 'PJI310'){
 			$id = isset($_RECV['id']) && $_RECV['id']!='' ? intval($_RECV['id']) : 0;
 
-			$rs = $id > 0 ? Agente::getAgente($id) ? Agente::listarAgentes();
+			$rs = $id > 0 ? Agente::getAgente($id) : Agente::listarAgentes();
 
 			echo json_encode($rs, JSON_NUMERIC_CHECK);
 		}

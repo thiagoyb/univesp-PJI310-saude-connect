@@ -63,8 +63,8 @@
 					$data_visita = isset($data['data_visita']) && $data['data_visita']!='' ? trim($data['data_visita']) : null;
 
 					$whereAdd ='';			
-					$whereAdd.= $status!=null ? ", status = '{$status}'";
-					$whereAdd.= $data_visita!=null ? ", data_visita = '{$data_visita}'";
+					$whereAdd.= $status!=null ? ", status = '{$status}'" : '';
+					$whereAdd.= $data_visita!=null ? ", data_visita = '{$data_visita}'" : '';
 
 					$querySql ="UPDATE sci_visitas SET data_cadastro = data_cadastro {$whereAdd} WHERE codVis = {$id}";
 
@@ -200,7 +200,7 @@ switch($_SERVER['REQUEST_METHOD']){
 		if(isset($_RECV['key']) && $_RECV['key'] = 'PJI310'){
 			$id = isset($_RECV['id']) && $_RECV['id']!='' ? intval($_RECV['id']) : 0;
 
-			$rs = $id > 0 ? Agente::getVisita($id) ? Agente::listarVisitas();
+			$rs = $id > 0 ? Visita::getVisita($id) : Visita::listarVisitas();
 
 			echo json_encode($rs, JSON_NUMERIC_CHECK);
 		}
