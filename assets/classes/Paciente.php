@@ -120,13 +120,13 @@
 			$profissao = isset($data['profissao']) ? strtoupper($data['profissao']) : null;
 
 			$whereAdd ='';
-			$whereAdd.= $nome!=null ? ", nome = '{$nome}'";
-			$whereAdd.= $email!=null ? ", email = '{$email}'";
-			$whereAdd.= $celular!=null ? ", celular = '{$celular}'";
-			$whereAdd.= $cns!=null ? ", cns = '{$cns}'";
-			$whereAdd.= $data_nasc!=null ? ", data_nasc = '{$data_nasc}'";
-			$whereAdd.= $sexo!=null ? ", sexo = '{$sexo}'";
-			$whereAdd.= $profissao!=null ? ", profissao = '{$profissao}'";
+			$whereAdd.= $nome!=null ? ", nome = '{$nome}'" : '';
+			$whereAdd.= $email!=null ? ", email = '{$email}'": '';
+			$whereAdd.= $celular!=null ? ", celular = '{$celular}'": '';
+			$whereAdd.= $cns!=null ? ", cns = '{$cns}'": '';
+			$whereAdd.= $data_nasc!=null ? ", data_nasc = '{$data_nasc}'": '';
+			$whereAdd.= $sexo!=null ? ", sexo = '{$sexo}'": '';
+			$whereAdd.= $profissao!=null ? ", profissao = '{$profissao}'": '';
 
 			$id = $this->getId();
 			$querySql ="UPDATE sci_pacientes SET data_cadastro = data_cadastro {$whereAdd} WHERE codPac = {$id}";
@@ -215,7 +215,7 @@ switch($_SERVER['REQUEST_METHOD']){
 		$arrResponse =  array('rs'=>false, 'msg'=>'');
 		$_RECV = Utils::receiveAjaxData('PUT');
 
-		if(isset($_RECV['key']) && $_RECV['key'] = 'PJI310'){
+		if(isset($_RECV['key']) && $_RECV['key'] == 'PJI310'){
 			$id = isset($_RECV['id']) && $_RECV['id']!='' ? intval($_RECV['id']) : 0;
 			$u = new Paciente($id);
 
@@ -238,10 +238,10 @@ switch($_SERVER['REQUEST_METHOD']){
 		$arrResponse =  array('rs'=>false, 'msg'=>'');
 		$_RECV = Utils::receiveAjaxData('GET');
 
-		if(isset($_RECV['key']) && $_RECV['key'] = 'PJI310'){
+		if(isset($_RECV['key']) && $_RECV['key'] == 'PJI310'){
 			$id = isset($_RECV['id']) && $_RECV['id']!='' ? intval($_RECV['id']) : 0;
 
-			$rs = $id > 0 ? Paciente::getPaciente($id) ? Paciente::listarPacientes();
+			$rs = $id > 0 ? Paciente::getPaciente($id) : Paciente::listarPacientes();
 
 			echo json_encode($rs, JSON_NUMERIC_CHECK);
 		}
@@ -251,7 +251,7 @@ switch($_SERVER['REQUEST_METHOD']){
 		$arrResponse =  array('rs'=>false, 'msg'=>'');
 		$_RECV = Utils::receiveAjaxData('POST');
 
-		if(isset($_RECV['key']) && $_RECV['key'] = 'PJI310'){
+		if(isset($_RECV['key']) && $_RECV['key'] == 'PJI310'){
 			$id = isset($_RECV['id']) && $_RECV['id']!='' ? intval($_RECV['id']) : 0;
 
 			if($id > 0){

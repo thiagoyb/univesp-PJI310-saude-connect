@@ -215,7 +215,7 @@ switch($_SERVER['REQUEST_METHOD']){
 		$arrResponse =  array('rs'=>false, 'msg'=>'');
 		$_RECV = Utils::receiveAjaxData('PUT');
 
-		if(isset($_RECV['key']) && $_RECV['key'] = 'PJI310'){
+		if(isset($_RECV['key']) && $_RECV['key'] == 'PJI310'){
 			$id = isset($_RECV['id']) && $_RECV['id']!='' ? intval($_RECV['id']) : 0;
 			$u = new Agente($id);
 
@@ -238,12 +238,12 @@ switch($_SERVER['REQUEST_METHOD']){
 		$arrResponse =  array('rs'=>false, 'msg'=>'');
 		$_RECV = Utils::receiveAjaxData('GET');
 
-		if(isset($_RECV['key']) && $_RECV['key'] = 'PJI310'){
+		if(isset($_RECV['key']) && $_RECV['key'] == 'PJI310'){
 			$id = isset($_RECV['id']) && $_RECV['id']!='' ? intval($_RECV['id']) : 0;
 
 			$rs = $id > 0 ? Agente::getAgente($id) : Agente::listarAgentes();
 
-			echo json_encode($rs, JSON_NUMERIC_CHECK);
+			if(strpos($_SERVER['REQUEST_URI'],'Agente.php')!==false) echo json_encode($rs, JSON_NUMERIC_CHECK);
 		}
 		break;
 	}
@@ -251,7 +251,7 @@ switch($_SERVER['REQUEST_METHOD']){
 		$arrResponse =  array('rs'=>false, 'msg'=>'');
 		$_RECV = Utils::receiveAjaxData('POST');
 
-		if(isset($_RECV['key']) && $_RECV['key'] = 'PJI310'){
+		if(isset($_RECV['key']) && $_RECV['key'] == 'PJI310'){
 			$id = isset($_RECV['id']) && $_RECV['id']!='' ? intval($_RECV['id']) : 0;
 
 			if($id > 0){
