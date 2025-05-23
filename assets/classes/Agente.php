@@ -75,7 +75,7 @@
 			$Sql = new Sql();
 
 			$login = isset($data['login']) ? Utils::soNumeros($data['login']) : null;
-			$senhaAtual = isset($data['senha']) && $data['senha']!='' ? $data['senha'] : null;
+			$senha = isset($data['senha']) && $data['senha']!='' ? $data['senha'] : null;
 
 			if($login!=null && $senha!=null){
 				if(Utils::isCPF($login)){

@@ -75,7 +75,7 @@
 			$Sql = new Sql();
 
 			$login = isset($data['login']) ? Utils::soNumeros($data['login']) : null;
-			$senhaAtual = isset($data['senha']) && $data['senha']!='' ? $data['senha'] : null;
+			$senha = isset($data['senha']) && $data['senha']!='' ? $data['senha'] : null;
 
 			if($login!=null && $senha!=null){
 				if(Utils::isCPF($login)){
@@ -234,7 +234,7 @@ switch($_SERVER['REQUEST_METHOD']){
 		}
 		break;
 	}
-	case 'GET1':{
+	case 'GET':{
 		$arrResponse =  array('rs'=>false, 'msg'=>'');
 		$_RECV = Utils::receiveAjaxData('GET');
 
@@ -247,9 +247,9 @@ switch($_SERVER['REQUEST_METHOD']){
 		}
 		break;
 	}
-	case 'GET':{
+	case 'POST':{
 		$arrResponse =  array('rs'=>false, 'msg'=>'');
-		$_RECV = Utils::receiveAjaxData('GET');
+		$_RECV = Utils::receiveAjaxData('POST');
 
 		if(isset($_RECV['key']) && $_RECV['key'] == 'PJI310'){
 			$id = isset($_RECV['id']) && $_RECV['id']!='' ? intval($_RECV['id']) : 0;
