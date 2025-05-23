@@ -82,7 +82,7 @@
 					$querySql = "SELECT * FROM sci_agente_saude WHERE ativado=1 AND cpf = '{$login}' AND senha = md5('{$senha}');";
 					$rs = $Sql->select1($querySql);
 
-					return $rs!=null && !empty($rs) ? $rs : false;
+					return $rs!=null && isset($rs['codUser']) ? $rs['codUser'] : false;
 				}
 				else return "CPF inválido !";
 			}
@@ -253,12 +253,16 @@ switch($_SERVER['REQUEST_METHOD']){
 
 		if(isset($_RECV['key']) && $_RECV['key'] == 'PJI310'){
 			$id = isset($_RECV['id']) && $_RECV['id']!='' ? intval($_RECV['id']) : 0;
+			$err=false;
 
 			if($id > 0){
 				$rs = Agente::loginAgente($_RECV);
+				$u = $rs!=null && is_numeric($rs) ? new Agente($rs) : array();
+				$data = !empty($u) ? array('id'=>$u->getId(),'tipo'=>'A',$u->getNome(), 'data_cadastro'=>date('d/m/Y', strtotime($u->getDataCadastro()))) : array();
 
-				$arrResponse['rs'] = $rs===true;
+				$arrResponse['rs'] = !empty($u);
 				$arrResponse['msg'] = is_string($rs) ? $rs : ($arrResponse['rs'] ? "Login com Sucesso!" : "Erro ao tentar fazer login.");
+				$arrResponse['data'] = json_encode($data,JSON_NUMERIC_CHECK);
 			}
 			else if(!isset($_RECV['id'])){
 				$rs = Agente::cadastrarAgente($_RECV);
