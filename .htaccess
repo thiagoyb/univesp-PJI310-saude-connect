@@ -1,0 +1,9 @@
+RewriteEngine On
+
+RewriteRule ^Agentes/?$ Agentes.php [NC,L]
+RewriteRule ^Pacientes/?$ Pacientes.php [NC,L]
+RewriteRule ^Visitas/?$ Visitas.php [NC,L]
+RewriteRule ^Comorbidades/?$ Comorbidades.php [NC,L]
+RewriteRule ^Sintomas/?$ Sintomas.php [NC,L]
+RewriteRule ^Entrevistas/?$ Entrevistas.php [NC,L]
+RewriteRule ^Familia/?$ Familia.php [NC,L]
