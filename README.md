@@ -74,3 +74,19 @@ Listar todas os Sintomas:
 GET /Sintomas
 ```
 
+## Prints das Interfaces
+ 
+<p align="center">
+  <img height="500" src="https://raw.githubusercontent.com/aline-csousa/univesp-PJI310-saudeconnect/refs/heads/main/src/imagem/tela-login.jpg"></img>
+<br />Tela Inicial do Aplicativo
+</p>
+
+<p align="center">
+  <img height="500" src="https://raw.githubusercontent.com/aline-csousa/univesp-PJI310-saudeconnect/refs/heads/main/src/imagem/post-send.png"></img>
+<br />Programação em Blocos - POST do Login
+</p>
+
+<p align="center">
+  <img height="500" src="https://raw.githubusercontent.com/aline-csousa/univesp-PJI310-saudeconnect/refs/heads/main/src/imagem/post-receive.png"></img>
+<br />Programação em Blocos - retorno do POST do Login
+</p>
